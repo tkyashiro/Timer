@@ -15,6 +15,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 ###### アプリ設定 ######
 ## ここにソースを追加する
 set(PTimer_SOURCES
+    Pomodoro.cpp
     Log.cpp
     LogRepository.cpp
     )
@@ -39,6 +40,7 @@ find_package(Qt5Test REQUIRED)
 set(testfiles
     sandboxTest.cpp
     LogRepositoryTest.cpp
+    PomodoroTest.cpp
     )
 
 ## 上記ファイルそれぞれに対してテストexeを作製、追加する。

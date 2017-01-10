@@ -1,14 +1,11 @@
 #include "LogRepository.h"
 
-LogRepository::LogRepository()
+LogCollection::LogCollection()
 {
 }
 
-void LogRepository::append(const Log &log)
+void LogCollection::append(const Log &log)
 {
+    logs_.push_back(log);
 }
 
-Log LogRepository::get() const
-{
-    return Log(1, QDateTime(), QDateTime());
-}
