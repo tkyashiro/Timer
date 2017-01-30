@@ -57,7 +57,7 @@ public:
     Log getLog() const
     {
         Q_ASSERT( !isRunning() );
-        Q_ASSERT( log );
+        //Q_ASSERT( log );
 
         return *log_;
     }
