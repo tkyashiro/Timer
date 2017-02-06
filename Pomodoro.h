@@ -3,7 +3,7 @@
 
 #include "Log.h"
 #include <memory>
-
+#include <QTimer>
 #if 0
 class Timer
 {
@@ -37,6 +37,7 @@ class Pomodoro
 {
 public:
     Pomodoro(int task) : task_(task) {}
+
 
     void start()
     {

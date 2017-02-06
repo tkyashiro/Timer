@@ -24,6 +24,7 @@ set(PTimer_UI_SOURCES
     mainwindow.ui
     mainwindow.cpp
     PomodoroWidget.cpp
+    PomodoroWidget.ui
     )
 
 add_executable(PTimer main.cpp ${PTimer_SOURCES} ${PTimer_UI_SOURCES})
