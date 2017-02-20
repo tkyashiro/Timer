@@ -12,7 +12,7 @@ private slots:
     void someTest2();
 };
 
-typedef Pomodoro<QTimer> Pom;
+typedef Pomodoro Pom;
 
 void PomodoroTest::someTest()
 {

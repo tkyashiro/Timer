@@ -32,18 +32,27 @@ public:
 /// - stop automatically when 25min has passed
 /// - notify observers when it's finished
 
-template <typename Timer>
-class Pomodoro
+//template <typename Timer>
+class Pomodoro : public QObject
 {
+    Q_OBJECT
+public:
+    enum State{ Running, Stopped };
 public:
     Pomodoro(int task) : task_(task) {}
 
+    Q_SIGNAL void stateChanged(State s);
+
+    Q_SIGNAL void elapsed(int minute);
 
     void start()
     {
         start_ = QDateTime::currentDateTime();
         timer_.setInterval( 25 * 60 * 1000 );
         timer_.start();
+
+        emit stateChanged(Running);
+        emit elapsed(0);
     }
 
     void finish()
@@ -53,6 +62,9 @@ public:
         end_ = QDateTime::currentDateTime();
         timer_.stop();
         log_ = std::make_shared<Log>(task_, start_, end_);
+
+        emit stateChanged(Stopped);
+        emit elapsed(20);
     }
 
     Log getLog() const
@@ -63,12 +75,18 @@ public:
         return *log_;
     }
 
+    int getPomodoroTime()
+    {
+        return pomodoroTime;
+    }
+
     bool isRunning() const { return timer_.isActive(); }
 private:
     int task_;
     QDateTime start_, end_;
-    Timer timer_;
+    QTimer timer_;
     std::shared_ptr<Log> log_;
+    const int pomodoroTime = 20;
 };
 
 #endif // POMODORO_H
