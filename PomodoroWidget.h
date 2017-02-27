@@ -54,9 +54,10 @@ private:
 
     // Controller
     std::unique_ptr<PomodoroController> app_;
+    QThread *worker_;
 
     void onStateChanged(Pomodoro::State s);
-    void onElapsed(int minute);
+    void onElapsed(int second);
 };
 
 #endif // POMODOROWIDGET_H

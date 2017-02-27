@@ -9,7 +9,8 @@ PomodoroWidget::PomodoroWidget(QWidget *parent) :
     ui(new Ui::PomodoroWidget),
     pomodoro_(std::make_shared<Pomodoro>(0)),
     repository_(std::make_shared<LogCollection>()),
-    pomodoroTime(pomodoro_->getPomodoroTime())
+    pomodoroTime(pomodoro_->getPomodoroTime()),
+    worker_(new QThread(this))
 {
     ui->setupUi(this);
     connect(pomodoro_.get(), &Pomodoro::stateChanged,
@@ -17,6 +18,9 @@ PomodoroWidget::PomodoroWidget(QWidget *parent) :
     connect(pomodoro_.get(), &Pomodoro::elapsed ,
             this, &PomodoroWidget::onElapsed);
     //connect(ui->btnStartStop, &QPushButton::clicked, this, &PomodoroWidget::on_btnStartStop_clicked);
+
+    pomodoro_->moveToThread(worker_);
+    worker_->start();
 }
 
 PomodoroWidget::~PomodoroWidget()
@@ -26,7 +30,6 @@ PomodoroWidget::~PomodoroWidget()
 
 void PomodoroWidget::on_btnStartStop_clicked()
 {
-
     qDebug() << "Button Pressed !" ;
     if(pomodoro_->isRunning()){
         pomodoro_->finish();
@@ -44,8 +47,7 @@ void PomodoroWidget::onStateChanged(Pomodoro::State s)
     }
 }
 
-void PomodoroWidget::onElapsed(int minute)
+void PomodoroWidget::onElapsed(int second)
 {
-
-    ui->lcdNumber->display(minute);
+    ui->lcdNumber->display(second);
 }

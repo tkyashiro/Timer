@@ -4,6 +4,8 @@
 #include "Log.h"
 #include <memory>
 #include <QTimer>
+#include <QThread>
+
 #if 0
 class Timer
 {
@@ -39,20 +41,32 @@ class Pomodoro : public QObject
 public:
     enum State{ Running, Stopped };
 public:
-    Pomodoro(int task) : task_(task) {}
+    Pomodoro(int task) : task_(task)
+    {
+        connect(&updatingTimer_, &QTimer::timeout, this, &Pomodoro::update);
+    }
 
     Q_SIGNAL void stateChanged(State s);
 
-    Q_SIGNAL void elapsed(int minute);
+    Q_SIGNAL void elapsed(int second);
 
     void start()
     {
-        start_ = QDateTime::currentDateTime();
-        timer_.setInterval( 25 * 60 * 1000 );
-        timer_.start();
+        elapsedTime = 0;
 
+        start_ = QDateTime::currentDateTime();
+        pomodoroTimer_.setInterval( pomodoroTime * 60 * 1000 );
+        pomodoroTimer_.start();
+        updatingTimer_.setInterval(1000);
+        updatingTimer_.start();
         emit stateChanged(Running);
         emit elapsed(0);
+    }
+
+    void update()
+    {
+        //QThread::sleep(5);
+        emit elapsed(++elapsedTime);
     }
 
     void finish()
@@ -60,11 +74,10 @@ public:
         Q_ASSERT( isRunning() );
 
         end_ = QDateTime::currentDateTime();
-        timer_.stop();
+        pomodoroTimer_.stop();
+        updatingTimer_.stop();
         log_ = std::make_shared<Log>(task_, start_, end_);
-
         emit stateChanged(Stopped);
-        emit elapsed(20);
     }
 
     Log getLog() const
@@ -80,13 +93,15 @@ public:
         return pomodoroTime;
     }
 
-    bool isRunning() const { return timer_.isActive(); }
+    bool isRunning() const { return pomodoroTimer_.isActive(); }
 private:
     int task_;
     QDateTime start_, end_;
-    QTimer timer_;
+    QTimer pomodoroTimer_;
+    QTimer updatingTimer_;
     std::shared_ptr<Log> log_;
     const int pomodoroTime = 20;
+    int elapsedTime;
 };
 
 #endif // POMODORO_H
