@@ -35,23 +35,15 @@ QT5_USE_MODULES(PTimer Widgets)
 ######### for unit tests #########
 
 enable_testing()
-
 find_package(Qt5Test REQUIRED)
 
-## ここにテストのソースを追加する
-set(testfiles
-    sandboxTest.cpp
-    LogRepositoryTest.cpp
-    PomodoroTest.cpp
-    )
+file(GLOB testfiles "tests/*.cpp")
 
-## 上記ファイルそれぞれに対してテストexeを作製、追加する。
 foreach(testfile ${testfiles})
     get_filename_component(testname ${testfile} NAME_WE)
-    add_executable(${testname} ${testfile} ${PTimer_SOURCES})
+    add_executable(${testname} ${testfile} ${PTimer_SOURCES} )
     QT5_USE_MODULES(${testname} Test)
     ### testfile と、Timerのロジックソースからテストを作成する
     add_test(${testname} ${testname})
 endforeach(testfile)
-
 

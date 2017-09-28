@@ -41,10 +41,7 @@ class Pomodoro : public QObject
 public:
     enum State{ Running, Stopped };
 public:
-    Pomodoro(int task) : task_(task)
-    {
-        connect(&updatingTimer_, &QTimer::timeout, this, &Pomodoro::update);
-    }
+    Pomodoro(int task);
 
     Q_SIGNAL void stateChanged(State s);
 
@@ -55,7 +52,7 @@ public:
         elapsedTime = 0;
 
         start_ = QDateTime::currentDateTime();
-        pomodoroTimer_.setInterval( pomodoroTime * 60 * 1000 );
+        pomodoroTimer_.setInterval( pomodoroTime_min * 60 * 1000 );
         pomodoroTimer_.start();
         updatingTimer_.setInterval(1000);
         updatingTimer_.start();
@@ -90,17 +87,22 @@ public:
 
     int getPomodoroTime()
     {
-        return pomodoroTime;
+        return pomodoroTime_min;
     }
 
     bool isRunning() const { return pomodoroTimer_.isActive(); }
+
+protected:
+    void setPomodoroTime(int min){ pomodoroTime_min = min; }
+
 private:
     int task_;
     QDateTime start_, end_;
     QTimer pomodoroTimer_;
     QTimer updatingTimer_;
     std::shared_ptr<Log> log_;
-    const int pomodoroTime = 20;
+
+    int pomodoroTime_min;
     int elapsedTime;
 };
 
