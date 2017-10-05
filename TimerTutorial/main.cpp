@@ -4,7 +4,7 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication::setOrganizationName("tkyashiro");
-    QCoreApplication::setApplicationName("PTimer");
+    QCoreApplication::setApplicationName("TimerTutorial");
 
     QApplication a(argc, argv);
 
